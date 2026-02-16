@@ -1,6 +1,14 @@
+#datasets paths
 datasets/
 Dataset/
-Phishing/
 
+#testing file paths
+testing/
+
+#virtual enviorment
 .venv/
-    
+Phishing/    
+
+# Python cache
+__pycache__/
+*.py[cod]
