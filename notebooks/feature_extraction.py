@@ -67,12 +67,12 @@ def has_query(url):
     try:
         url = str(url).strip()
         if not url:
-            return 0
+            return False
 
         parsed = urlparse(url)
-        return int(bool(parsed.query))
+        return (bool(parsed.query))
     except Exception:
-        return 0
+        return False
 
 
 def no_question_marks(url):
@@ -101,10 +101,10 @@ def countAtInUrls(url):
 
 def findASymbolAtLast(url):
     if url[-1] == '/':
-        return 0
+        return False
     if not url[-1].isalnum():
-        return 1
-    return 0
+        return True
+    return False
 
 
 def checkHttpInMiddle(url):
