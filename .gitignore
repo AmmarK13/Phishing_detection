@@ -1,3 +1,6 @@
-Dataset/
+datasets/
 
 Phishing/
+
+.venv/
+    
