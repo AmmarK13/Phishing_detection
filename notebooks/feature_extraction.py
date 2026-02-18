@@ -210,4 +210,8 @@ def download_csv(df, path):
     print(f"File saved successfully at: {path}")
 
 
-
+def download_another_csv(df, path):
+    features_to_save = ['url_length', 'num_slashes', 'num_question_marks', 'num_dashes',
+       'num_at', 'symbol_at_end', 'http_in_middle', 'has_ip', 'has_port','type']
+    df[features_to_save].to_csv(path, index=False)
+    print(f"File saved successfully at: {path}")
