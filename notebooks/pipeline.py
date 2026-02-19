@@ -9,7 +9,7 @@ def main(input_path,output_path):
 
     df=add_features(df=df,url_column="url")
 
-    download_another_csv(df,output_path)
+    download_csv(df,output_path)
 
 
 
