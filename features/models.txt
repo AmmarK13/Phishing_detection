@@ -1,0 +1,87 @@
+              precision    recall  f1-score   support
+
+           0       0.94      0.91      0.93     69148
+           1       0.74      0.82      0.78     20888
+
+    accuracy                           0.89     90036
+   macro avg       0.84      0.87      0.85     90036
+weighted avg       0.90      0.89      0.89     90036
+
+Confusion Matrix: [[63107  6041]
+ [ 3753 17135]]
+Accuracy: 0.891221289262073
+
+Parameters
+
+
+rf = RandomForestClassifier(
+    n_estimators=500,          # stable for large dataset
+    max_depth=None,       
+    min_samples_split=10,       
+    min_samples_leaf=1,        
+    max_features="sqrt",       
+    class_weight="balanced",   # important for phishing
+    bootstrap=True,
+    n_jobs=-1,
+    random_state=42,
+    criterion="entropy"
+)
+
+
+
+
+rf = RandomForestClassifier(
+    n_estimators=1200,          
+    max_depth=30,       
+    min_samples_split=10,       
+    min_samples_leaf=1,        
+    max_features="sqrt",       
+    class_weight="balanced",   # important for phishing
+    bootstrap=True,
+    n_jobs=-1,
+    random_state=42,
+    criterion="entropy"
+)
+
+
+rf = RandomForestClassifier(
+    n_estimators=1200,          
+    max_depth=30,       
+    min_samples_split=10,       
+    min_samples_leaf=1,        
+    max_features="sqrt",       
+    class_weight="balanced",   # important for phishing
+    bootstrap=True,
+    n_jobs=-1,
+    random_state=42,
+    criterion="entropy"
+)
+
+
+
+rf = RandomForestClassifier(
+    n_estimators=1200,          
+    max_depth=30,       
+    min_samples_split=10,       
+    min_samples_leaf=1,        
+    max_features="sqrt",       
+    class_weight="balanced",   
+    bootstrap=True,
+    n_jobs=-1,
+    random_state=42,
+    criterion="entropy"
+)
+
+
+              precision    recall  f1-score   support
+
+  legitimate       0.97      0.98      0.98     69148
+    phishing       0.94      0.92      0.93     20888
+
+    accuracy                           0.97     90036
+   macro avg       0.96      0.95      0.95     90036
+weighted avg       0.97      0.97      0.97     90036
+
+Confusion Matrix: [[67976  1172]
+ [ 1761 19127]]
+Accuracy: 0.9674241414545293
