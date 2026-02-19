@@ -7,8 +7,111 @@ import ipaddress
 from urllib.parse import urlparse
 import re
 from collections import Counter
+import tldextract
+import math
 
 
+
+special_keywords=['http:',
+ 'wp',
+ 'https:',
+ 'index.php',
+ 'includes',
+ 'content',
+ 'images',
+ 'login',
+ 'admin',
+ 'js',
+ '1',
+ 'login.php',
+ 'dropbox',
+ 'email',
+ 'en',
+ 'plugins',
+ 'cmd',
+ 'css',
+ 'secure',
+ 'index.html',
+ 'themes',
+ 'home',
+ 'id',
+ 'rand',
+ 'amp;fid',
+ 'update',
+ 'n',
+ 'amp',
+ '13inboxlightaspxn.1774256418',
+ 'doc',
+ 'amp;fav.1',
+ 'index.htm',
+ 'site',
+ 'file',
+ 'view',
+ 'data',
+ 'userid',
+ '1774256418',
+ 'alibaba',
+ 'm',
+ 'auth',
+ 'sites.google.com',
+ 'ref',
+ 'account',
+ '13inboxlight.aspx',
+ 'ii.php',
+ 'gate.php',
+ 'index',
+ '4',
+ 'modules',
+ 'l',
+ 'document',
+ 'us.battle.net',
+ 'components',
+ 'login_submit',
+ 'files',
+ 'amp;id',
+ 'fid',
+ 'us',
+ 'new',
+ 'd3',
+ '0',
+ 'media',
+ 'bookmark',
+ 'img',
+ 'amp;email',
+ 'libraries',
+ 'signin',
+ 'system',
+ 'amp;fid.4.1252899642',
+ 'amp;fid.1',
+ 'cp.php',
+ 'amp;fid.1252899642',
+ 'dhl',
+ 'amp;session',
+ 'user',
+ 'myaccount',
+ 'uploads',
+ 'amp;rand.13inboxlight.aspxn.1774256418',
+ 'a',
+ 'amp;.rand',
+ 'templates',
+ 'cgi',
+ 'app',
+ '.rand',
+ 'bin',
+ 'web',
+ 'websc',
+ 'go',
+ '...',
+ 'page',
+ 'www.paypal.com',
+ '2',
+ 'db',
+ 'remax',
+ 'blog',
+ 'fav.1',
+ 'logs',
+ '_jehfuq_vjoxk0qwhtogydw_product',
+ 'upload']
 
 def path_to_length_ratio(url):
     try:
@@ -62,6 +165,38 @@ def no_dot_present(url):
    dot='.'
    dot_count=sum(1 for char in url if char in dot)
    return dot_count
+
+
+def digit_ratio_in_domain(url):
+    try:
+        url = str(url).strip()
+        if not url:
+            return 0
+        hostname = urlparse(url).hostname
+        if not hostname:
+            return 0
+        digits = sum(c.isdigit() for c in hostname)
+        total_chars = len(hostname)
+        return digits / total_chars if total_chars > 0 else 0
+    except Exception:
+        return 0
+    
+
+def num_subdomains(url):
+    try:
+        url = str(url).strip()
+        if not url:
+            return 0
+        hostname = urlparse(url).hostname  
+        if not hostname:
+            return 0
+        parts = hostname.split('.')  
+        
+        if len(parts) <= 2:
+            return 0
+        return len(parts) - 2
+    except Exception:
+        return 0
 
 def has_query(url):
     try:
@@ -140,6 +275,43 @@ def has_port_number(url):
         return False
     return re.search(r":\d{1,5}\b", url) is not None
 
+def domain_length(url):
+    try:
+        parsed = urlparse(url)
+        ext = tldextract.extract(url)
+        domain = ext.domain
+        return len(domain)
+    except Exception:
+        return 0
+    
+
+def url_entropy(url):
+    try:
+        url = str(url)
+        if not url:
+            return 0.0
+        counts = {}
+        for c in url:
+            counts[c] = counts.get(c, 0) + 1
+        entropy = 0.0
+        length = len(url)
+        for count in counts.values():
+            p = count / length
+            entropy -= p * math.log2(p)
+        return entropy
+    except Exception:
+        return 0.0
+
+
+def get_tld(url):
+    try:
+        ext = tldextract.extract(url)
+        tld = ext.suffix.lower()  # e.g., 'com', 'xyz'
+        return tld if tld else ''
+    except Exception:
+        return ''
+
+
 
 
 from feature_extraction import *
@@ -198,7 +370,26 @@ def add_features(df, url_column="url"):
     df["has_unicode"] = df[url_column].apply(has_unicode_chars)  
 
     print("Creating has_port...")
-    df["has_port"] = df[url_column].apply(has_port_number)  
+    df["has_port"] = df[url_column].apply(has_port_number)
+
+    print("Creating keyword count...")
+    df["special_keyword_count"] = df["url"].apply(
+    lambda x: count_suspicious_keywords(x, special_keywords)
+)
+    print("Creating sub domain count...")
+    df["num_subdomain"]=df["url"].apply(num_subdomains)
+
+    print("Creating digit ratio in domain....")
+    df["digit_ratio_in_domain"]=df["url"].apply(digit_ratio_in_domain)
+
+    print("Creating tld  risk ..")
+    df["has_risk"]=df["url"].apply(get_tld)
+
+    print("Creating url entropy ..")
+    df["url_entropy"]=df["url"].apply(url_entropy)
+    
+    print("Creating domain length ..")
+    df["domain_lenght"]=df["url"].apply(domain_length)
 
     print("All features created successfully ✅")
 
