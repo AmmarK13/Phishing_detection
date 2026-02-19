@@ -12,3 +12,6 @@ Phishing/
 # Python cache
 __pycache__/
 *.py[cod]
+
+#Model
+Model/
